@@ -1,6 +1,8 @@
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const V1Addon = require('@embroider/compat').V1Addon;
+const walkSync = require('walk-sync');
 
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
@@ -19,6 +21,27 @@ module.exports = function(defaults) {
   // modules that you would like to import into your application
   // please specify an object with the list of modules as keys
   // along with the exports of each module as its value.
+  const Webpack = require('@embroider/webpack').Webpack;
 
-  return app.toTree();
+
+  let compatAdapters = new Map();
+  compatAdapters.set('ember-font-awesome', class EmberFontAwesome extends V1Addon {
+    get packageMeta() {
+      let meta = super.packageMeta;
+      if (!meta['public-assets']) {
+        meta['public-assets'] = {};
+      }
+      let fontFiles = walkSync('node_modules/font-awesome/fonts/');
+      for (let path of fontFiles) {
+        let [fileName] = path.split('/').reverse();
+        meta['public-assets'][`node_modules/font-awesome/fonts/${path}`] = `/fonts/${fileName}`;
+      }
+      return meta;
+    }
+  });
+
+  return require('@embroider/compat').compatBuild(app, Webpack, {
+    compatAdapters
+  });
+  // return app.toTree();
 };
