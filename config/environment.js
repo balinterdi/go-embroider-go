@@ -2,7 +2,7 @@
 
 module.exports = function(environment) {
   let ENV = {
-    modulePrefix: 'try-embroider',
+    modulePrefix: 'go-embroider-go',
     environment,
     rootURL: '/',
     locationType: 'auto',
