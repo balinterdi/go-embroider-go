@@ -40,6 +40,9 @@ module.exports = function(defaults) {
     }
   });
 
+  if (process.env.CLASSIC) {
+    return app.toTree();
+  }
   return require('@embroider/compat').compatBuild(app, Webpack, {
     compatAdapters
   });
