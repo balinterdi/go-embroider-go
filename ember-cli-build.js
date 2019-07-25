@@ -43,7 +43,9 @@ module.exports = function(defaults) {
     return app.toTree();
   }
   return require('@embroider/compat').compatBuild(app, Webpack, {
-    compatAdapters
+    compatAdapters,
+    staticAddonTrees: true,
+    staticAddonTestSupportTrees: true,
   });
   // return app.toTree();
 };
